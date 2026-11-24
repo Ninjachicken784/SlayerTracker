@@ -42,7 +42,9 @@ public final class Hud {
 			type.display + ": " + (xp < 0 ? "? (/slayertracker setxp)" : String.format(Locale.US, "%,d", xp)),
 			"Boss/h: " + (stats.bossesPerHour() < 0 ? "--" : Long.toString(Math.round(stats.bossesPerHour()))),
 			"Avg Spawn: " + seconds(stats.averageSpawnSeconds()),
-			"Avg Boss: " + seconds(stats.averageBossSeconds())
+			"Avg Boss: " + seconds(stats.averageBossSeconds()),
+			"Last Spawn: " + seconds(stats.lastSpawnSeconds()),
+			"Last Boss: " + seconds(stats.lastBossSeconds())
 		};
 	}
 

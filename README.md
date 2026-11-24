@@ -7,6 +7,8 @@ Blaze: 5,244,000
 Boss/h: 99
 Avg Spawn: 21.4s
 Avg Boss: 12.8s
+Last Spawn: 11.0s
+Last Boss: 22.0s
 ```
 
 ## Get the jar

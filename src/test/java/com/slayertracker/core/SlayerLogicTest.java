@@ -14,6 +14,7 @@ public class SlayerLogicTest {
 	public static void main(String[] args) {
 		parsing();
 		autoSlayer();
+		lastTimes();
 		duplicateMessages();
 		failureAndBreak();
 		joinMidQuest();
@@ -79,6 +80,22 @@ public class SlayerLogicTest {
 		check(xp.get(SlayerType.BLAZE) == 5_245_500L, "XP added for three tier IV bosses");
 		logic.reset();
 		check(logic.stats(SlayerType.BLAZE).bossesPerHour() < 0 && xp.get(SlayerType.BLAZE) == 5_245_500L, "reset keeps XP");
+	}
+
+	static void lastTimes() {
+		fresh();
+		check(logic.stats(SlayerType.BLAZE).lastSpawnSeconds() < 0, "no last time at the start");
+		logic.chat("SLAYER QUEST STARTED!", now);
+		spawnAndFight(20_000, 30_000);
+		logic.chat("SLAYER QUEST COMPLETE!", now);
+		logic.chat("SLAYER QUEST STARTED!", now);
+		spawnAndFight(11_000, 22_000);
+		logic.chat("SLAYER QUEST COMPLETE!", now);
+		SlayerStats s = logic.stats(SlayerType.BLAZE);
+		near(s.lastSpawnSeconds(), 11, "last spawn");
+		near(s.lastBossSeconds(), 22, "last boss");
+		logic.reset();
+		check(logic.stats(SlayerType.BLAZE).lastBossSeconds() < 0, "reset clears last times");
 	}
 
 	static void duplicateMessages() {

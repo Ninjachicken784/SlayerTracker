@@ -194,6 +194,7 @@ public final class SlayerLogic {
 						SlayerStats s = stats(type);
 						s.spawnCount++;
 						s.spawnMs += now - questStart;
+						s.lastSpawnMs = now - questStart;
 					}
 					bossStart = now;
 					state = State.BOSS;
@@ -234,6 +235,7 @@ public final class SlayerLogic {
 			if (state == State.BOSS && bossStart >= 0) {
 				s.bossCount++;
 				s.bossMs += now - bossStart;
+				s.lastBossMs = now - bossStart;
 			}
 			if (cycleComplete && cycleMs > 0) {
 				s.ratedKills++;
