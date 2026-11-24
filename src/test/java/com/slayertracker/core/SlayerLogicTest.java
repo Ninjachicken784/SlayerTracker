@@ -60,8 +60,35 @@ public class SlayerLogicTest {
 		check(q != null && q.type() == SlayerType.BLAZE && q.tier() == 4 && q.phase() == QuestInfo.Phase.FARMING, "parse farming");
 		check(quest("  Slay the boss! ").phase() == QuestInfo.Phase.BOSS, "parse boss");
 		check(QuestInfo.parse(List.of("Purse: 5")) == null, "no quest");
-		check(MenuXp.read(List.of("Blaze Slayer", "Total XP: 5,244,000")).xp() == 5_244_000, "menu total");
-		check(MenuXp.read(List.of("Blaze Slayer", "XP: 50/100")) == null, "menu ignores unclear text");
+		leaderboard();
+	}
+
+	/** Text copied from a screenshot of the real menu. */
+	static void leaderboard() {
+		List<String> item = List.of("§bSlayer Leaderboards", "Ultimate bragging rights", "",
+				"Revenant Horror: §a11,854,362 §7(Top §a0.06%§7)",
+				"Tarantula Broodfather: 6,504,568 (Top 0.08%)",
+				"Sven Packmaster: 3,777,880 (#818)",
+				"Voidgloom Seraph: 9,925,366 (#169)",
+				"Riftstalker Bloodfiend: 2,535 (Top 40.89%)",
+				"Inferno Demonlord: 3,921,497 (#847)");
+		Map<SlayerType, Long> totals = MenuXp.read(item);
+		check(totals.size() == 6, "all six slayers");
+		check(totals.get(SlayerType.ZOMBIE) == 11_854_362L && totals.get(SlayerType.SPIDER) == 6_504_568L
+				&& totals.get(SlayerType.WOLF) == 3_777_880L && totals.get(SlayerType.ENDERMAN) == 9_925_366L
+				&& totals.get(SlayerType.VAMPIRE) == 2_535L && totals.get(SlayerType.BLAZE) == 3_921_497L, "totals");
+		check(MenuXp.read(List.of("Slayer Leaderboards", "Revenant Horror: N/A")).isEmpty(), "no kills yet");
+		check(MenuXp.read(List.of("Other item", "Revenant Horror: 5")).isEmpty(), "other items ignored");
+
+		fresh();
+		SlayerLogic.XpStore store = new SlayerLogic.XpStore() {
+			public long get(SlayerType t) { return xp.getOrDefault(t, -1L); }
+			public void set(SlayerType t, long v) { xp.put(t, v); }
+		};
+		xp.put(SlayerType.ZOMBIE, 11_878_362L);
+		MenuXp.apply(totals, store);
+		check(xp.get(SlayerType.ZOMBIE) == 11_878_362L, "lower number does not replace");
+		check(xp.get(SlayerType.BLAZE) == 3_921_497L, "unknown total is filled in");
 	}
 
 	static void autoSlayer() {

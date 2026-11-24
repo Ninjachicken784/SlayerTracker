@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.Slot;
 
 /** Connects the game to the tracking logic. */
 public final class Tracker {
-	public static final SlayerLogic LOGIC = new SlayerLogic(new SlayerLogic.XpStore() {
+	private static final SlayerLogic.XpStore XP = new SlayerLogic.XpStore() {
 		@Override
 		public long get(SlayerType type) {
 			return Config.get().xp(type);
@@ -27,7 +27,9 @@ public final class Tracker {
 		public void set(SlayerType type, long xp) {
 			Config.get().setXp(type, xp);
 		}
-	});
+	};
+
+	public static final SlayerLogic LOGIC = new SlayerLogic(XP);
 
 	private static final int CHAT_KEPT = 40;
 	private static final Deque<String> chatLog = new ArrayDeque<>();
@@ -100,8 +102,7 @@ public final class Tracker {
 				copy.add("--- slot " + slot.index);
 				for (String line : lines) copy.add(QuestInfo.clean(line));
 			}
-			MenuXp.Result result = MenuXp.read(lines);
-			if (result != null) Config.get().setXp(result.type(), result.xp());
+			MenuXp.apply(MenuXp.read(lines), XP);
 		}
 		lastMenu = copy;
 	}

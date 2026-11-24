@@ -33,7 +33,8 @@ and put `slayertracker-1.0.0.jar` (not the `-sources` one) in your `mods` folder
 - Timing stats are per slayer and reset when you close the game. Total XP is saved (one set, not per profile).
 
 ## Total XP
-Set by `/slayertracker setxp`, or read from the game if its text matches what the mod expects.
-After that, each kill adds the XP for the boss tier.
+Open Maddox's **Slayer** menu and keep it open for a second. The mod reads all slayers from the
+**Slayer Leaderboards** item (no hovering needed). A lower number never replaces the saved one.
+Each kill adds the XP for the boss tier. `/slayertracker setxp` can still correct a number by hand.
 
 The game text used for detection has not been tested in game yet.
